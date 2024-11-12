@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe to My Channel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+            margin: 0;
+        }
+
+        .channel-ad {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        .channel-ad img {
+            height: 200px;
+            width: 200px;
+            border-radius: 100%;
+            background-color: blue;
+        }
+
+        .channel-ad button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 5px; /* Adjusted margin */
+        }
+
+        .success-message {
+            margin-top: 10px;
+            color: green;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 5px; /* Reduced padding */
+            margin: 0; /* Removed margin */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="radio"],
+        input[type="range"] {
+            width: auto;
+        }
+
+        h6 {
+            font-size: 14px; /* Adjust the size of h6 text */
+            margin: 0; /* Removed default margin */
+        }
+
+        table {
+            width: 100%;
+            margin: 0; /* Removed margin */
+        }
+
+        td {
+            padding: 0; /* Removed padding */
+            vertical-align: top; /* Align text to the top of the cell */
+        }
+    </style>
+    <script type="text/javascript">
+        // Restrict to Wednesday
+        function restrictToWednesday() {
+            const dateInput = document.getElementById('date_of_birth');
+            const selectedDate = new Date(dateInput.value);
+            const dayOfWeek = selectedDate.getUTCDay();
+
+            if (dayOfWeek !== 3) {  // 3 = Wednesday
+                alert("Please select a Wednesday.");
+                dateInput.value = '';
+            }
+        }
+
+        // Set the image source from URL input
+        function button() {
+            var a = document.getElementById('text').value;
+            var b = document.getElementById('image');
+            b.src = a;
+        }
+        // Secret usage
+        const {
+          GoogleGenerativeAI,
+          HarmCategory,
+          HarmBlockThreshold,
+        } = require("@google/generative-ai");
+
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+        // Chat creation
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+        const chat = model.startChat({
+          generationConfig: {
+            maxOutputTokens: 100,
+          },
+        });
+
+        const result = await chat.sendMessage("Hello, how are you?");
+        const response = result.response;
+        console.log(response.text());
+
+        // Text generation
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const result = await model.generateContent("Write a short poem about artificial intelligence.");
+        console.log(result.response.text());
+
+        //Image analysis
+        const fs = require('fs');
+
+        const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+
+        const imageParts = [
+          {
+            inlineData: {
+              data: fs.readFileSync("image.jpg", {encoding: 'base64'}),
+              mimeType: "image/jpeg"
+            }
+          },
+        ];
+
+        const result = await model.generateContent(["Describe this image:", ...imageParts]);
+        console.log(result.response.text());
+        
+    </script>
+</head>
+
+<body>
+    <?php
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Retrieve form data, ensuring proper validation and sanitization
+        $name = htmlspecialchars($_POST['name']);
+        $gender = htmlspecialchars($_POST['gender']);
+        $age = htmlspecialchars($_POST['age']);
+        $region = htmlspecialchars($_POST['region']);
+        $weight = htmlspecialchars($_POST['weight']);
+        $height = htmlspecialchars($_POST['height']);
+        $comment = htmlspecialchars($_POST['comment']);
+        $rating = htmlspecialchars($_POST['rating']);
+        $recommend = isset($_POST['recommend']) ? 'Yes' : 'No';
+        $fileName = htmlspecialchars($_FILES['file']['name']);
+        $mobileNumber = htmlspecialchars($_POST['mobile_number']);
+        $email = htmlspecialchars($_POST['email']);
+        $website = htmlspecialchars($_POST['website']);
+        $password = htmlspecialchars($_POST['password']);
+        $dateOfBirth = htmlspecialchars($_POST['date_of_birth']);
+        $preferredTime = htmlspecialchars($_POST['preferred_time']);
+        $image = htmlspecialchars($_POST['image']);
+
+        // Declare $subscriptionMessage outside the if block
+        $subscriptionMessage = ""; 
+
+        // Validate required fields
+        if (empty($name) || empty($gender) || empty($age) || empty($region) || empty($weight) || empty($height) || empty($comment) || empty($mobileNumber) || empty($email) || empty($password) || empty($dateOfBirth) || empty($preferredTime)) {
+            // Handle missing required fields (e.g., display an error message)
+            echo '<div class="error-message">Please fill in all required fields.</div>';
+        } else {
+            // Validate other fields as needed (e.g., email format, password strength)
+
+            // Process form data (e.g., save to database, send email)
+            // ...
+
+            // Create a personalized message
+            $subscriptionMessage = "Thank you for subscribing, $name! ";
+            if ($gender === 'male') {
+                $subscriptionMessage .= "We appreciate our male audience!";
+            } elseif ($gender === 'female') {
+                $subscriptionMessage .= "We appreciate our female audience!";
+            } else {
+                $subscriptionMessage .= "We appreciate your support!";
+            }
+            $subscriptionMessage .= " You are $age years old, live " . ($region === 'within' ? "within India" : "outside India") .
+                ", weigh $weight kg, and are $height cm tall. Your comment: \"$comment\". ";
+            $subscriptionMessage .= "You rated us $rating stars and will " . ($recommend === 'Yes' ? '' : 'not ') . "recommend us.";
+            if ($fileName) {
+                $subscriptionMessage .= " You also uploaded the file: $fileName.";
+            }
+
+            // Display success message
+            echo '<div class="success-message">' . $subscriptionMessage . '</div>';
+        }
+    }
+    ?>
+    <div class="channel-ad">
+        <h2>My Channel Name</h2>
+        <p>Subscribe for amazing content!</p>
+        <form id="subscribeForm" method="POST" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><h6>Your Full Name:</h6></td>
+                    <td><input type="text" name="name" placeholder="Your Full Name" required></td>
+                </tr>
+                <tr>
+                    <td><h6>Gender:</h6></td>
+                    <td>
+                        <input type="radio" id="male" name="gender" value="male" required>
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" name="gender" value="female" required>
+                        <label for="female">Female</label>
+                        <input type="radio" id="other" name="gender" value="other" required>
+                        <label for="other">Other</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Your Age:</h6></td>
+                    <td><input type="number" name="age" placeholder="Your Age" required min="1" max="120"></td>
+                </tr>
+                <tr>
+                    <td><h6>Select Region:</h6></td>
+                    <td>
+                        <select name="region" required>
+                            <option value="" disabled selected>Select Region</option>
+                            <option value="within">Within India</option>
+                            <option value="outside">Outside India</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Weight (kg):</h6></td>
+                    <td>
+                        <input type="range" name="weight" min="0" max="500" step="1" value="70"
+                            oninput="document.getElementById('weightDisplay').innerText = this.value">
+                        <span id="weightDisplay">70</span> kg
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Height (cm):</h6></td>
+                    <td><input type="number" name="height" placeholder="Enter your height in cm" required min="0" max="5000"></td>
+                </tr>
+                <tr>
+                    <td><h6>Leave a Comment:</h6></td>
+                    <td><textarea name="comment" placeholder="Leave a comment" rows="4"></textarea></td>
+                </tr>
+                <tr>
+                    <td><h6>Mobile Number:</h6></td>
+                    <td><input type="number" name="mobile_number" placeholder="Enter your Mobile Number" required></td>
+                </tr>
+                <tr>
+                    <td><h6>Email:</h6></td>
+                    <td><input type="email" name="email" placeholder="Enter your E-Mail Address" required></td>
+                </tr>
+                <tr>
+                    <td><h6>Website URL:</h6></td>
+                    <td><input type="url" name="website" placeholder="Enter your website's URL"></td>
+                </tr>
+                <tr>
+                    <td><h6>Password:</h6></td>
+                    <td><input type="password" name="password" placeholder="Enter your Password" required></td>
+                </tr>
+                <tr>
+                    <td><h6>Date of Birth (Wednesday Only):</h6></td>
+                    <td>
+                        <input type="date" name="date_of_birth" id="date_of_birth" onchange="restrictToWednesday()" placeholder="Enter your Date of Birth" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Preferred Time:</h6></td>
+                    <td>
+                        <input type="time" name="preferred_time" min="09:00" max="17:00" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Image URL:</h6></td>
+                    <td>
+                        <input id="text" type="text" placeholder="Enter Image URL">
+                        <button type="button" onclick="button()">Upload</button><br>
+                        <img id="image" alt="Uploaded Image"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Rating:</h6></td>
+                    <td>
+                        <select name="rating" required>
+                            <option value="" disabled selected>Select Rating</option>
+                            <option value="1">⭐</option>
+                            <option value="2">⭐⭐</option>
+                            <option value="3">⭐⭐⭐</option>
+                            <option value="4">⭐⭐⭐⭐</option>
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Would you recommend us?</h6></td>
+                    <td>
+                        <input type="checkbox" name="recommend" value="yes">
+                        <label for="recommend">Yes</label>
+
+                        <input type="checkbox" name="recommend" value="no">
+<label for="recommend">No</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h6>Upload Detailed Response:</h6></td>
+                    <td><input type="file" name="file" accept=".txt,.doc,.docx,.pdf"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit" name="subscribe">Submit</button>
+                        <button type="reset" id="resetBtn">Reset</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <?php if (isset($subscriptionMessage)): ?>
+            <div class="success-message"><?php echo $subscriptionMessage; ?></div>
+        <?php endif; ?>
+    </div>
+    <script>
+        const subscribeForm = document.getElementById('subscribeForm');
+        const resetBtn = document.getElementById('resetBtn');
+        const image = document.getElementById('image');
+
+        // Handle form submission
+        subscribeForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+            alert('Thank you for subscribing!');
+
+            // Now submit the form
+            subscribeForm.submit();
+        });
+
+        // Handle form reset
+        resetBtn.addEventListener('click', () => {
+            // Reset the image when the form is reset
+            image.src = '';
+        });
+    </script>
+</body>
+
+</html>
